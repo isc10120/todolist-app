@@ -1,5 +1,6 @@
 import React , {useRef, useState, useEffect} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import CalendarPicker from 'react-native-calendar-picker';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -36,11 +37,12 @@ export default function App(){
     var button = {backgroundColor: 'black', padding: 9.5, borderRadius: 6, alignItems: 'center', width: 75}
     var buttonText = {color: 'white'}
 
-    useEffect(() => {
+    useFocusEffect( React.useCallback(() => {
+        // 화면이 포커스될 때 실행할 코드
+        console.log('월별 체크리스트 화면이 포커스됨');
         const today = new Date();
-        console.log(today)
-        onDateChange(new Date())
-    }, []);
+        onDateChange(today)
+    }, []))   
 
     async function onDateChange(d:Date){
         console.log(d);
@@ -227,8 +229,8 @@ export default function App(){
 
         const TodoRef = ref(db, "ToDoList/");
         var newTodoRef = push(TodoRef, {
-            Title: title,
-            Description: description
+            Title: title.trim(),
+            Description: description.trim()
         })
 
         console.log("날짜:")

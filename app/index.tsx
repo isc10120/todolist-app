@@ -1,6 +1,6 @@
 import React , {useRef, useState, useEffect} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
-
+import { useFocusEffect } from '@react-navigation/native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { format, addDays, subDays, startOfWeek, endOfWeek } from 'date-fns';
@@ -21,13 +21,15 @@ export default function App(){
   const [showDate, setShowDate] = useState('오늘');
 
   const today = new Date();
-  useEffect(() => {
-      console.log(today)
-      onDateChange(today);
-  }, []);
 
-    // 체크박스 상태 변경 핸들러들
-    const DayHandleToggle = (id, done) => {
+  useFocusEffect( React.useCallback(() => {
+    // 화면이 포커스될 때 실행할 코드
+    console.log('To Do List 화면이 포커스됨');
+    onDateChange(date)
+  }, []))
+
+  // 체크박스 상태 변경 핸들러들
+  const DayHandleToggle = (id, done) => {
       update(ref(db, "ChecklistByDate/"+format(date,"yyyy-MM-dd")+"/"+id), {Done: !done})
       setDaylist((prevlist) =>
           prevlist.map((item) =>

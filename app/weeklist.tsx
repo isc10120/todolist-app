@@ -1,6 +1,7 @@
 import React , {useRef, useState, useEffect} from 'react';
 import {Text, View, TextInput, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
 import CalendarPicker from 'react-native-calendar-picker';
+import { useFocusEffect } from '@react-navigation/native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Icon from 'react-native-vector-icons/Ionicons';
 import { format, addDays, startOfWeek, endOfWeek } from 'date-fns';
@@ -31,18 +32,17 @@ export default function App(){
 
     const [checklist, setChecklist] = useState([]);
 
-
-
     const repeatOptions = [
         { label: '반복 안함', value: 'none' },
         { label: '매주', value: 'week' }
     ];
 
-    useEffect(() => {
+    useFocusEffect( React.useCallback(() => {
+        // 화면이 포커스될 때 실행할 코드
+        console.log('주별 체크리스트 화면이 포커스됨');
         const today = new Date();
-        console.log(today)
         calendarRef.current.handleOnPressDay({year:today.getFullYear(), month:today.getMonth(), day:today.getDate()});
-    }, []);
+    }, []))   
 
     async function onDateChange(d:Date, type:string){
         const prevDateRef = ref(db, "ChecklistByDate/"+format(weekStart,"yyyy-MM-dd")+" ~ "+format(weekEnd,"yyyy-MM-dd"));
@@ -245,8 +245,8 @@ export default function App(){
 
         const TodoRef = ref(db, "ToDoList/");
         var newTodoRef = push(TodoRef, {
-            Title: title,
-            Description: description
+            Title: title.trim(),
+            Description: description.trim()
         })
 
         console.log("날짜:")
